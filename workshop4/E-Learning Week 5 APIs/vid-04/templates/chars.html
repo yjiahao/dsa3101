@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Avatar Character List</title>
+</head>
+<body>
+
+These are the {{ list_type }} currently on the server:
+
+    <ul id="navigation"> 
+    {% for cc in char_names %} 
+        <li>{{cc}}</li> 
+    {% endfor %}
+    </ul>
+</body>
+
+</html>
