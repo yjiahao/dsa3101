@@ -1,0 +1,3 @@
+CREATE USER 'admin'@'%' IDENTIFIED BY 'e24r1PgtbG';
+GRANT SELECT, INSERT, UPDATE ON sakila.* TO 'admin'@'%';
+FLUSH PRIVILEGES;
