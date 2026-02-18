@@ -1,0 +1,30 @@
+.btn-sleek-blue {
+    background-color: #007BFF;
+    color: #007BFF;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+}
+
+.btn-sleek-blue:hover {
+    background-color: #0056b3;
+    color: #FFFFFF;
+    border: 1px solid #0056b3;
+}
+
+.Select.has-value.is-clearable.is-searchable.Select--single:focus-visible {
+    background-color: #e9e9e9
+}
+
+/* In your CSS file */
+.tabs-container {
+    text-align: center;
+}
+
+.tabs-content {
+    padding: 20px;
+}
+
+.centered-tabs {
+    width: 50%;
+    margin: 0 auto;
+}

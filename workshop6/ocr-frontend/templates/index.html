@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+        <!-- Include Bootstrap CSS from a CDN -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+        <!-- Include Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- For swiping on Mobile -->
+        <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <title>DSA3101 OCR</title>
+    </head>
+    <body>
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <!-- Additional Slider Container for Session Selection -->
+                <div id="page0" class="swiper-slide map-container">
+                    <h2 class="form-label">Session Selection</h2>
+                    <div class="btn-group-vertical" role="group" aria-label="Session Selection">
+                        <button type="button" class="btn btn-primary mb-2 session-btn" id="morning-session">Morning</button>
+                        <button type="button" class="btn btn-primary session-btn" id="afternoon-session">Afternoon</button>
+                    </div>
+                </div>
+            
+                <div id="page4" class="swiper-slide map-container">
+                    <h2 class="form-label">Reporting Type</h2>
+                    <div class="btn-group-vertical" role="group" aria-label="Reporting Type Selection">
+                        <button type="button" class="btn btn-primary mb-2 reporting-btn" id="normal-reporting">Normal</button>
+                        <button type="button" class="btn btn-primary reporting-btn" id="reference-reporting">Reference/Base</button>
+                    </div>
+                </div>
+                <div id="page1" class="swiper-slide map-container">
+                    <div class="card-body text-center">
+                        <div id="camera-feed">
+                            <video id="camera-feed-video" autoplay playsinline class="w-100"></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                            <div id="bounding-box" style="position: absolute; border: 2px solid red; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; height: 70%; pointer-events: none;"></div>
+                        </div>
+                        <div class="mt-3">
+                            <p id="instructions" class="instructions">Make sure that the panel fits within the red box</p>
+                            <button id="capture-button" class="btn btn-primary"><i class="fa fa-camera"></i></button>
+                            <img id="captured-image" src="" alt="Captured Image" class="img-fluid" style="display: none;" />
+                            <div class="button-container">
+                            <button id="confirm-button" class="btn btn-success btn-confirm" style="display: none;">Confirm</button>
+                            <button id="retake-button" class="btn btn-danger btn-retake" style="display: none;">Retake</button>
+                            </div>
+                            <button id="skip-button" class="btn btn-primary btn-skip" style="padding:4px; display: none;"><i class="fa fa-forward"></i></button> 
+                            <span id="timestamp" style="display: none; font-size: 12px;"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Custom dialog box HTML -->
+                <div id="custom-dialog">
+                    <div class="dialog-content">
+                        <p style="font-size: 20px; font-weight: bold; font-family: Poppins, sans-serif;">Please check the extracted weight. If wrong, change the value here:</p>
+                        <input type="number" id="dialog-input" class="form-control" value="100" />
+                        <div class="dialog-buttons">
+                            <button id="dialog-ok" class="btn btn-success">OK</button>
+                            <button id="dialog-cancel" class="btn btn-danger" style="margin: 5%;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="page2" class="swiper-slide map-container">
+                    <div class="map-section">
+                        <label class="form-label">Approximated GPS Location:</label>
+                        <div id="map"></div>
+                    </div>
+                    <div class="dropdown-section">
+                        <label for="marker-dropdown" class="form-label">Select Bin Center:</label>
+                        <select id="marker-dropdown" class="form-select">
+                            {% for bin_center in bin_centers %}
+                            <option value="{{ bin_center.binCenterName }}" data-lat="{{ bin_center.binCenterLat }}" data-lon="{{ bin_center.binCenterLon }}">{{ bin_center.binCenterName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div id="page3" class="swiper-slide map-container">
+                    <h2 class="form-label-2">Confirmation Page</h2>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p class="display-label">Extracted Weight: <span id="extracted-weight">Not extracted yet</span></p>
+                    <hr class="gradient" />
+                    <p class="display-label">Selected Bin Center: <span id="selected-bin-center">Not selected yet</span></p>
+                    <hr class="gradient" />
+                    <p class="display-label">Timestamp: <span id="time-stamp">Not extracted yet yet</span></p>
+                    <hr class="gradient" />
+                    <p class="display-label" id="manual-input-label" style="display: none;">Manual Weight: <span id="manual-weight">0</span></p>
+                    <hr class="gradient" style="display: none;" />
+                    <form id="weightForm" onsubmit="return validateWeight()">
+                        <label for="weight" style="font-size: 16px; color: rgb(102, 102, 102);">Please check the extracted weight. If wrong, change the value here:</label>
+                        <input type="number" id="weight" name="weight" oninput="showManualInputLabel()" />
+                    </form>
+                    <p></p>
+                    <button id="submit-form" class="submit-button">Submit!</button>
+                </div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+        <!-- Popup HTML -->
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <!-- Your popup content here -->
+                <p style="font-size: 20px; font-weight: bold; font-family: Poppins, sans-serif;">INSTRUCTIONS</p>
+                <p style="font-size: 14px; font-weight: bold; font-family: Poppins, sans-serif; color: rgba(102, 102, 102, 1);">Please take a photo similar to this example</p>
+                <div class="v229_1978"></div>
+                <button id="close-popup" class="custom-button-close">Click this to proceed</button>
+            </div>
+        </div>
+        <script>
+            const binCenters = {{ bin_centers | tojson }};
+        </script>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+        <script src="{{url_for('static', filename='js/index.js')}}"></script>
+    </body>
+</html>

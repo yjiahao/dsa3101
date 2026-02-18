@@ -1,0 +1,19 @@
+# base image
+FROM python:3.10.6-slim-buster
+
+WORKDIR /app
+
+# Set environment variable
+ENV API_CORS_HEADER "*"
+
+COPY requirements.txt requirements.txt
+COPY main.py main.py
+ADD templates templates
+ADD static static
+ADD dashboard dashboard
+ADD assets assets
+
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+
+ENTRYPOINT python -u -m main
