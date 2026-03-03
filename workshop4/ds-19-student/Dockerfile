@@ -23,4 +23,6 @@ COPY . .
 EXPOSE 5000
 
 # Run the application
+# can run in debug mode by specifying --debug before run
+# can specify --port=5000 to make it listen to port 5000 before run
 CMD  ["python", "-u", "-m", "flask", "-A", "datacompass", "run", "--host=0.0.0.0"]
