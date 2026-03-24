@@ -1,0 +1,18 @@
+services:  # Defines the list of services (containers) to run
+  backend:  # Name of the first service. Frontend can request at "http://backend:5000/xxx"
+    build: ./backend  # Build the image using the Dockerfile in this folder
+    ports:
+      - "5000:5000"  # Map port 5000 on the host to port 5000 in the container
+
+  frontend:  # Name of the second service
+    build: ./frontend  # Build the image using the Dockerfile in this folder
+    depends_on:  
+      - backend  # Wait for backend service to start first
+    volumes:
+      - ./frontend:/app  # Mount binding (enables live code editing) 
+    ports:
+      - "8502:8501"  # Map port 8502 on the host to port 8501 in the container
+
+# You can now access:
+#   - Streamlit UI at http://localhost:8502
+#   - Flask API at http://localhost:5000/xxx

@@ -1,0 +1,34 @@
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8501:8501"
+    develop:
+      watch:
+        - action: sync
+          path: ./streamlit_app
+          target: /app/streamlit_app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    # platform: linux/amd64    #Uncomment this line for Mac users
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - "3306"
+
+  vis_app:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile2
+    ports:
+      - "8502:8502"
+    depends_on:
+      - db
