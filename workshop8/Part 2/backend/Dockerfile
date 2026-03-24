@@ -1,7 +1,7 @@
 FROM python:3.13-trixie
 # FROM python:3.11-slim
 
-WORKDIR /app
+WORKDIR /app/backend
 
 COPY requirements.txt .
 COPY data/*csv data/

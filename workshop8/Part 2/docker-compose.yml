@@ -9,7 +9,7 @@ services:  # Defines the list of services (containers) to run
     depends_on:  
       - backend  # Wait for backend service to start first
     volumes:
-      - ./frontend:/app  # Mount binding (enables live code editing) 
+      - ./frontend:/app/frontend  # Mount binding (enables live code editing) 
     ports:
       - "8502:8501"  # Map port 8502 on the host to port 8501 in the container
 
