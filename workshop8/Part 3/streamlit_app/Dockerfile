@@ -1,6 +1,6 @@
 FROM python:3.10-slim
-WORKDIR /app
-COPY vis_app/ ./
+WORKDIR /app/streamlit_app
+COPY . .
 
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
@@ -9,5 +9,5 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
     
 RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 8502
-CMD ["streamlit", "run", "app.py", "--server.port=8502", "--server.address=0.0.0.0"]
+EXPOSE 8501
+CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
