@@ -14,9 +14,9 @@ st.header("What is data science?")
 @st.cache_data
 def load_module_data():
     files = {
-        "NUS": "/data/nus-dsa.csv",
-        "NTU": "/data/ntu.csv",
-        "SMU": "/data/smu.csv"
+        "NUS": "data/nus-dsa.csv",
+        "NTU": "data/ntu.csv",
+        "SMU": "data/smu.csv"
     }
 
     ### Get the module codes

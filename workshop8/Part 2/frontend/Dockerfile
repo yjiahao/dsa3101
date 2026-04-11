@@ -2,6 +2,7 @@ FROM python:3.10-slim
 WORKDIR /app/frontend
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+COPY frontend/data/*csv data/
 COPY . .
 CMD ["streamlit", "run", "frontend.py", "--server.port=8501", "--server.address=0.0.0.0"]
 
